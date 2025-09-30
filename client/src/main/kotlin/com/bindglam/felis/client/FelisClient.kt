@@ -32,12 +32,12 @@ class FelisClient : Runnable {
         window.backgroundColor = RGBAColor.of(18, 33, 43, 255)
 
         val vertices = floatArrayOf(
-            -0.5f, -0.5f * sqrt(3f) / 3, 0.0f,
-            0.5f, -0.5f * sqrt(3f) / 3, 0.0f,
-            0.0f, 0.5f * sqrt(3f) * 2 / 3, 0.0f,
-            -0.5f / 2, 0.5f * sqrt(3f) / 6, 0.0f,
-            0.5f / 2, 0.5f * sqrt(3f) / 6, 0.0f,
-            0.0f, -0.5f * sqrt(3f) / 3, 0.0f
+            -0.5f, -0.5f * sqrt(3f) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f, // Lower left corner
+            0.5f, -0.5f * sqrt(3f) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f, // Lower right corner
+            0.0f,  0.5f * sqrt(3f) * 2 / 3, 0.0f,     1.0f, 0.6f,  0.32f, // Upper corner
+            -0.25f, 0.5f * sqrt(3f) * 1 / 6, 0.0f,     0.9f, 0.45f, 0.17f, // Inner left
+            0.25f, 0.5f * sqrt(3f) * 1 / 6, 0.0f,     0.9f, 0.45f, 0.17f, // Inner right
+            0.0f, -0.5f * sqrt(3f) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f
         )
 
         val indices = intArrayOf(
@@ -55,7 +55,8 @@ class FelisClient : Runnable {
         val vbo = VBO(vertices)
         val ebo = EBO(indices)
 
-        vao.linkVBO(vbo, 0)
+        vao.linkVBO(vbo, 0, 3, GL11.GL_FLOAT, 6, 0L)
+        vao.linkVBO(vbo, 1, 3, GL11.GL_FLOAT, 6, 3L)
 
         vao.unbind()
         vbo.unbind()

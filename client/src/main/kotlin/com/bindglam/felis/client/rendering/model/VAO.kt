@@ -1,17 +1,15 @@
 package com.bindglam.felis.client.rendering.model
 
 import com.bindglam.felis.utils.Destroyable
-import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
-import org.lwjgl.system.MemoryUtil.NULL
 
 class VAO : Destroyable {
     val id = GL30.glGenVertexArrays()
 
-    fun linkVBO(vbo: VBO, layout: Int) {
+    fun linkVBO(vbo: VBO, layout: Int, numComponents: Int, type: Int, stride: Int, offset: Long) {
         vbo.bind()
-        GL20.glVertexAttribPointer(layout, 3, GL11.GL_FLOAT, false, 0, NULL)
+        GL20.glVertexAttribPointer(layout, numComponents, type, false, stride * Float.SIZE_BYTES, offset * Float.SIZE_BYTES)
         GL20.glEnableVertexAttribArray(layout)
         vbo.unbind()
     }
