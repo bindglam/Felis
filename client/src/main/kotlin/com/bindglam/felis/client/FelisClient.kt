@@ -29,7 +29,7 @@ class FelisClient : Runnable {
     override fun run() {
         window.init()
 
-        window.backgroundColor = RGBAColor.of(0f, 0f, 0f, 0f)
+        window.backgroundColor = RGBAColor.of(18, 33, 43, 255)
 
         val vertices = floatArrayOf(
             -0.5f, -0.5f * sqrt(3f) / 3, 0.0f,

@@ -1,21 +1,21 @@
 package com.bindglam.felis.utils.math
 
 interface RGBColor {
-    fun r(): Float
+    fun r(): Short
 
-    fun g(): Float
+    fun g(): Short
 
-    fun b(): Float
+    fun b(): Short
 
 
     companion object {
         @JvmStatic
-        fun of(r: Float, g: Float, b: Float): RGBColor = Impl(r, g, b)
+        fun of(r: Short, g: Short, b: Short): RGBColor = Impl(r, g, b)
     }
 
-    private class Impl(private val r: Float, private val g: Float, private val b: Float) : RGBColor {
-        override fun r(): Float = r
-        override fun g(): Float = g
-        override fun b(): Float = b
+    private class Impl(private val r: Short, private val g: Short, private val b: Short) : RGBColor {
+        override fun r(): Short = r
+        override fun g(): Short = g
+        override fun b(): Short = b
     }
 }

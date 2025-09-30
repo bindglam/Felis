@@ -32,11 +32,11 @@ class Window(title: String, private var width: Int, private var height: Int) : D
             GLFW.glfwSetWindowSize(handle, width, height)
         }
 
-    var backgroundColor: RGBAColor = RGBAColor.of(0f, 0f, 0f, 0f)
+    var backgroundColor: RGBAColor = RGBAColor.of(0, 0, 0, 0)
         set(value) {
             field = value
 
-            GL11.glClearColor(value.r(), value.g(), value.b(), value.a())
+            GL11.glClearColor(value.r() / 255f, value.g() / 255f, value.b() / 255f, value.a() / 255f)
         }
 
     fun init() {
