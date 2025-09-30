@@ -4,8 +4,10 @@ import com.bindglam.felis.client.io.Window
 import com.bindglam.felis.client.rendering.model.EBO
 import com.bindglam.felis.client.rendering.model.VAO
 import com.bindglam.felis.client.rendering.model.VBO
+import com.bindglam.felis.client.rendering.shader.Shader
 import com.bindglam.felis.utils.math.RGBAColor
 import org.lwjgl.opengl.GL11
+import java.io.File
 import kotlin.math.sqrt
 
 class FelisClient : Runnable {
@@ -27,7 +29,7 @@ class FelisClient : Runnable {
     override fun run() {
         window.init()
 
-        window.backgroundColor = RGBAColor.of(1f, 0f, 0f, 0f)
+        window.backgroundColor = RGBAColor.of(0f, 0f, 0f, 0f)
 
         val vertices = floatArrayOf(
             -0.5f, -0.5f * sqrt(3f) / 3, 0.0f,
@@ -44,6 +46,9 @@ class FelisClient : Runnable {
             5, 4, 1
         )
 
+        val shader = Shader(File("assets/shaders/default.vert.glsl"), File("assets/shaders/default.frag.glsl"))
+        shader.init()
+
         val vao = VAO()
         vao.bind()
 
@@ -59,6 +64,7 @@ class FelisClient : Runnable {
         while(!window.shouldClose()) {
             window.clear()
 
+            shader.activate()
             vao.bind()
             GL11.glDrawElements(GL11.GL_TRIANGLES, indices.size, GL11.GL_UNSIGNED_INT, 0)
 
@@ -68,6 +74,7 @@ class FelisClient : Runnable {
         vao.destroy()
         vbo.destroy()
         ebo.destroy()
+        shader.destroy()
 
         window.destroy()
     }
