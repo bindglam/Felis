@@ -1,0 +1,97 @@
+package com.bindglam.felis.client.io
+
+import com.bindglam.felis.utils.Destroyable
+import com.bindglam.felis.utils.math.RGBAColor
+import org.joml.Vector2i
+import org.lwjgl.glfw.Callbacks
+import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFWErrorCallback
+import org.lwjgl.opengl.GL
+import org.lwjgl.opengl.GL11
+import org.lwjgl.system.MemoryStack.stackPush
+import org.lwjgl.system.MemoryUtil.NULL
+
+class Window(title: String, private var width: Int, private var height: Int) : Destroyable {
+    private var _handle: Long = 0L
+    val handle: Long
+        get() = _handle
+
+    var title: String = title
+        set(value) {
+            field = value
+
+            GLFW.glfwSetWindowTitle(handle, value)
+        }
+
+    var size: Vector2i
+        get() = Vector2i(width, height)
+        set(value) {
+            width = value.x
+            height = value.y
+
+            GLFW.glfwSetWindowSize(handle, width, height)
+        }
+
+    var backgroundColor: RGBAColor = RGBAColor.of(0f, 0f, 0f, 0f)
+        set(value) {
+            field = value
+
+            GL11.glClearColor(value.r(), value.g(), value.b(), value.a())
+        }
+
+    fun init() {
+        GLFWErrorCallback.createPrint(System.err).set()
+
+        if(!GLFW.glfwInit())
+            throw IllegalStateException("Unable to initialize GLFW")
+
+        GLFW.glfwDefaultWindowHints()
+        GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE)
+        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE)
+
+        _handle = GLFW.glfwCreateWindow(width, height, title, NULL, NULL)
+        if(_handle == NULL)
+            throw RuntimeException("Failed to create the GLFW window")
+
+        stackPush().use { stack ->
+            val pWidth = stack.mallocInt(1)
+            val pHeight = stack.mallocInt(1)
+
+            GLFW.glfwGetWindowSize(handle, pWidth, pHeight)
+
+            val vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor())!!
+
+            GLFW.glfwSetWindowPos(
+                handle,
+                (vidMode.width() - pWidth.get(0)) / 2,
+                (vidMode.height() - pHeight.get(0)) / 2
+            )
+        }
+
+        GLFW.glfwMakeContextCurrent(handle)
+        GLFW.glfwSwapInterval(1)
+
+        GLFW.glfwShowWindow(handle)
+
+        GL.createCapabilities()
+    }
+
+    fun shouldClose(): Boolean = GLFW.glfwWindowShouldClose(handle)
+
+    fun clear() {
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
+    }
+
+    fun update() {
+        GLFW.glfwSwapBuffers(handle)
+        GLFW.glfwPollEvents()
+    }
+
+    override fun destroy() {
+        Callbacks.glfwFreeCallbacks(handle)
+        GLFW.glfwDestroyWindow(handle)
+
+        GLFW.glfwTerminate()
+        GLFW.glfwSetErrorCallback(null)?.free()
+    }
+}
