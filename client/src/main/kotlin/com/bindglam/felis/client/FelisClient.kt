@@ -34,11 +34,11 @@ class FelisClient : Runnable {
         val scene = Scene()
 
         val player = ClientPlayerEntity(true)
-        player.position.set(0f, -0.5f, -2.0f)
+        player.position.set(0f, 0.5f, -2.0f)
         scene.addEntity(player)
 
         val testEntity = TestEntity()
-        testEntity.position.set(0f, 0.0f, -2.0f)
+        testEntity.position.set(0f, 1.0f, 2.0f)
         scene.addEntity(testEntity)
 
         val testEntity2 = TestEntity()

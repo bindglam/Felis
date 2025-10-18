@@ -7,6 +7,7 @@ import com.bindglam.felis.client.rendering.entity.RenderEntity
 import com.bindglam.felis.scene.Scene
 import com.bindglam.felis.utils.Destroyable
 import org.joml.Matrix4f
+import org.joml.Vector3f
 import java.util.UUID
 
 class RenderScene(val scene: Scene) : Destroyable, Renderable {
@@ -48,8 +49,8 @@ class RenderScene(val scene: Scene) : Destroyable, Renderable {
     }
 
     private fun ICamera.createViewMatrix(): Matrix4f = Matrix4f().identity()
-        .rotateX(Math.toRadians(rotation.x.toDouble()).toFloat())
-        .rotateY(Math.toRadians(rotation.y.toDouble()).toFloat())
-        .rotateZ(Math.toRadians(rotation.z.toDouble()).toFloat())
-        .translate(position)
+        .rotateX(Math.toRadians(-rotation.x.toDouble()).toFloat())
+        .rotateY(Math.toRadians(-rotation.y.toDouble()).toFloat())
+        .rotateZ(Math.toRadians(-rotation.z.toDouble()).toFloat())
+        .translate(position.x, -position.y, position.z)
 }
