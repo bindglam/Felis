@@ -1,12 +1,13 @@
 package com.bindglam.felis.client.io.input
 
+import com.bindglam.felis.client.io.Window
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFWKeyCallback
 
-class KeyboardInputHandler : GLFWKeyCallback() {
-    val keys = BooleanArray(GLFW.GLFW_KEY_LAST) { false }
-    val justPressed = BooleanArray(GLFW.GLFW_KEY_LAST) { false }
-    val justReleased = BooleanArray(GLFW.GLFW_KEY_LAST) { false }
+class KeyboardInputHandler(private val window: Window) : GLFWKeyCallback() {
+    private val keys = BooleanArray(GLFW.GLFW_KEY_LAST) { false }
+    private val justPressed = BooleanArray(GLFW.GLFW_KEY_LAST) { false }
+    private val justReleased = BooleanArray(GLFW.GLFW_KEY_LAST) { false }
 
     private val lastState = BooleanArray(GLFW.GLFW_KEY_LAST) { false }
 
@@ -23,4 +24,8 @@ class KeyboardInputHandler : GLFWKeyCallback() {
             keys[key] = action == GLFW.GLFW_PRESS
         }
     }
+
+    fun isPressed(key: Int): Boolean = GLFW.glfwGetKey(window.handle, key) == GLFW.GLFW_PRESS
+    fun isJustPressed(key: Int): Boolean = justPressed[key]
+    fun isJustReleased(key: Int): Boolean = justReleased[key]
 }

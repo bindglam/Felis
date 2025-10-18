@@ -52,7 +52,7 @@ class Window(title: String, private var width: Int, private var height: Int) : D
         get() = Matrix4f().perspective(FOV, width.toFloat() / height, Z_NEAR, Z_FAR)
 
     val mouseInputHandler = MouseInputHandler(this)
-    val keyboardInputHandler = KeyboardInputHandler()
+    val keyboardInputHandler = KeyboardInputHandler(this)
 
     fun init() {
         GLFWErrorCallback.createPrint(System.err).set()
@@ -113,6 +113,8 @@ class Window(title: String, private var width: Int, private var height: Int) : D
 
         mouseInputHandler.update()
         keyboardInputHandler.update()
+
+        Timer.update()
     }
 
     override fun destroy() {
