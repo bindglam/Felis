@@ -6,23 +6,23 @@ import com.bindglam.felis.utils.Destroyable
 import java.io.File
 
 object MasterRenderingManager : IManager, Destroyable {
-    val defaultShader = Shader(File("assets/shaders/default.vert.glsl"), File("assets/shaders/default.frag.glsl"))
+    val sceneShader = Shader(File("assets/shaders/scene.vert.glsl"), File("assets/shaders/scene.frag.glsl"))
 
     override fun start() {
-        defaultShader.init()
+        sceneShader.init()
 
         EntityRenderingManager.start()
-        SceneRenderingManager.start()
+        SceneManager.start()
     }
 
     fun render() {
-        SceneRenderingManager.render()
+        SceneManager.render()
     }
 
     override fun destroy() {
-        defaultShader.destroy()
+        sceneShader.destroy()
 
         EntityRenderingManager.destroy()
-        SceneRenderingManager.destroy()
+        SceneManager.destroy()
     }
 }

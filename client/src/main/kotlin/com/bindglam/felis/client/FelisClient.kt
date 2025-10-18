@@ -1,13 +1,12 @@
 package com.bindglam.felis.client
 
+import com.bindglam.felis.client.entity.ClientPlayerEntity
 import com.bindglam.felis.client.io.Window
 import com.bindglam.felis.client.manager.MasterRenderingManager
-import com.bindglam.felis.client.manager.SceneRenderingManager
-import com.bindglam.felis.client.rendering.scene.RenderScene
+import com.bindglam.felis.client.manager.SceneManager
 import com.bindglam.felis.entity.TestEntity
 import com.bindglam.felis.scene.Scene
 import com.bindglam.felis.utils.math.RGBAColor
-import org.joml.Matrix4f
 
 class FelisClient : Runnable {
     companion object {
@@ -34,24 +33,28 @@ class FelisClient : Runnable {
 
         val scene = Scene()
 
+        val player = ClientPlayerEntity(true)
+        player.position.set(0f, -0.5f, -2.0f)
+        scene.addEntity(player)
+
         val testEntity = TestEntity()
+        testEntity.position.set(0f, 0.0f, -2.0f)
         scene.addEntity(testEntity)
 
-        SceneRenderingManager.changeScene(scene, MasterRenderingManager.defaultShader)
+        val testEntity2 = TestEntity()
+        testEntity2.position.set(1f, 0.0f, 0.0f)
+        scene.addEntity(testEntity2)
+
+        SceneManager.changeScene(scene)
 
         while(!window.shouldClose()) {
             window.clear()
 
             testEntity.rotation.y+=1f
+            testEntity2.rotation.y-=1f
             MasterRenderingManager.render()
 
-            val view = Matrix4f()
-            val proj = Matrix4f()
-            view.translate(0f, -0.5f, -2.0f)
-            proj.perspective(Math.toRadians(45.0).toFloat(), window.size.x.toFloat() / window.size.y, 0.1f, 100.0f)
-
-            MasterRenderingManager.defaultShader.setUniform("view", view)
-            MasterRenderingManager.defaultShader.setUniform("proj", proj)
+            MasterRenderingManager.sceneShader.setUniform("proj", window.projectionMatrix)
 
             window.update()
         }

@@ -2,6 +2,7 @@ package com.bindglam.felis.client.io
 
 import com.bindglam.felis.utils.Destroyable
 import com.bindglam.felis.utils.math.RGBAColor
+import org.joml.Matrix4f
 import org.joml.Vector2i
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
@@ -12,6 +13,12 @@ import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil.NULL
 
 class Window(title: String, private var width: Int, private var height: Int) : Destroyable {
+    companion object {
+        private val FOV = Math.toRadians(45.0).toFloat()
+        private const val Z_NEAR = 0.1f
+        private const val Z_FAR = 100f
+    }
+
     private var _handle: Long = 0L
     val handle: Long
         get() = _handle
@@ -38,6 +45,9 @@ class Window(title: String, private var width: Int, private var height: Int) : D
 
             GL11.glClearColor(value.r() / 255f, value.g() / 255f, value.b() / 255f, value.a() / 255f)
         }
+
+    val projectionMatrix: Matrix4f
+        get() = Matrix4f().perspective(FOV, width.toFloat() / height, Z_NEAR, Z_FAR)
 
     fun init() {
         GLFWErrorCallback.createPrint(System.err).set()

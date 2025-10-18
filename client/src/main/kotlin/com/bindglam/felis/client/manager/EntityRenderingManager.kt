@@ -2,7 +2,8 @@ package com.bindglam.felis.client.manager
 
 import com.bindglam.felis.client.rendering.entity.EntityRenderer
 import com.bindglam.felis.client.rendering.entity.EntityRendererFactory
-import com.bindglam.felis.client.rendering.entity.TestRendererFactory
+import com.bindglam.felis.client.rendering.entity.PlayerRenderer
+import com.bindglam.felis.client.rendering.entity.TestRenderer
 import com.bindglam.felis.client.rendering.shader.Shader
 import com.bindglam.felis.entity.Entity
 import com.bindglam.felis.entity.EntityType
@@ -13,7 +14,15 @@ object EntityRenderingManager : IManager, Destroyable {
     private val renderers = hashMapOf<EntityType, EntityRendererFactory>()
 
     init {
-        registerRenderer(TestRendererFactory())
+        registerRenderer(EntityRendererFactory.builder()
+            .create { entity, shader -> TestRenderer(entity, shader) }
+            .type(EntityType.TEST)
+            .build())
+
+        registerRenderer(EntityRendererFactory.builder()
+            .create { entity, shader -> PlayerRenderer(entity, shader) }
+            .type(EntityType.PLAYER)
+            .build())
     }
 
     override fun start() {
