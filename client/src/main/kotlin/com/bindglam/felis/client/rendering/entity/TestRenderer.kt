@@ -1,6 +1,5 @@
 package com.bindglam.felis.client.rendering.entity
 
-import com.bindglam.felis.client.manager.MasterRenderingManager
 import com.bindglam.felis.client.rendering.model.EBO
 import com.bindglam.felis.client.rendering.model.Texture
 import com.bindglam.felis.client.rendering.model.VAO

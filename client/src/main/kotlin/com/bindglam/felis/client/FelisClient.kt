@@ -7,7 +7,6 @@ import com.bindglam.felis.entity.TestEntity
 import com.bindglam.felis.scene.Scene
 import com.bindglam.felis.utils.math.RGBAColor
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11
 
 class FelisClient : Runnable {
     companion object {

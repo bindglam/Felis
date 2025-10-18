@@ -4,7 +4,6 @@ import com.bindglam.felis.client.rendering.shader.Shader
 import com.bindglam.felis.utils.Destroyable
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
-import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
 import org.lwjgl.stb.STBImage
 import org.lwjgl.system.MemoryStack.stackPush
