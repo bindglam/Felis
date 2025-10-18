@@ -48,6 +48,9 @@ class ClientPlayerEntity(val isMultiplayerAuthority: Boolean) : AbstractPlayerEn
                 if(keyboardHandler.isPressed(GLFW.GLFW_KEY_SPACE)) {
                     position.add(0f, SPEED * Timer.deltaTime.toFloat(), 0f)
                 }
+                if(keyboardHandler.isPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                    position.add(0f, -SPEED * Timer.deltaTime.toFloat(), 0f)
+                }
             }
 
             if(keyboardHandler.isJustPressed(GLFW.GLFW_KEY_ESCAPE)) {

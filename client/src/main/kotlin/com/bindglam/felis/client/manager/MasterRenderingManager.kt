@@ -7,9 +7,11 @@ import java.io.File
 
 object MasterRenderingManager : IManager, Destroyable {
     val sceneShader = Shader(File("assets/shaders/scene.vert.glsl"), File("assets/shaders/scene.frag.glsl"))
+    val debugShader = Shader(File("assets/shaders/debug.vert.glsl"), File("assets/shaders/debug.frag.glsl"))
 
     override fun start() {
         sceneShader.init()
+        debugShader.init()
 
         EntityRenderingManager.start()
         SceneManager.start()
@@ -21,6 +23,7 @@ object MasterRenderingManager : IManager, Destroyable {
 
     override fun destroy() {
         sceneShader.destroy()
+        debugShader.destroy()
 
         EntityRenderingManager.destroy()
         SceneManager.destroy()

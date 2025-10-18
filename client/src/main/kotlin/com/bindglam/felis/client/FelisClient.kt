@@ -54,7 +54,7 @@ class FelisClient : Runnable {
             testEntity2.rotation.y-=1f
             MasterRenderingManager.render()
 
-            MasterRenderingManager.sceneShader.setUniform("proj", window.projectionMatrix)
+            println(testEntity2.hitbox.isColliding(player.hitbox))
 
             window.update()
         }

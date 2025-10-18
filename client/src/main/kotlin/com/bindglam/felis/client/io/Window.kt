@@ -16,7 +16,7 @@ import org.lwjgl.system.MemoryUtil.NULL
 
 class Window(title: String, private var width: Int, private var height: Int) : Destroyable {
     companion object {
-        private val FOV = Math.toRadians(45.0).toFloat()
+        private val FOV = Math.toRadians(90.0).toFloat()
         private const val Z_NEAR = 0.1f
         private const val Z_FAR = 100f
     }
