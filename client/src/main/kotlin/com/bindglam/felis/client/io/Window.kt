@@ -53,6 +53,11 @@ class Window(title: String, private var width: Int, private var height: Int) : D
         if(_handle == NULL)
             throw RuntimeException("Failed to create the GLFW window")
 
+        GLFW.glfwSetWindowSizeCallback(handle) { _, w, h ->
+            width = w
+            height = h
+        }
+
         stackPush().use { stack ->
             val pWidth = stack.mallocInt(1)
             val pHeight = stack.mallocInt(1)
@@ -74,11 +79,14 @@ class Window(title: String, private var width: Int, private var height: Int) : D
         GLFW.glfwShowWindow(handle)
 
         GL.createCapabilities()
+
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
     }
 
     fun shouldClose(): Boolean = GLFW.glfwWindowShouldClose(handle)
 
     fun clear() {
+        GL11.glViewport(0, 0, width, height)
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
     }
 

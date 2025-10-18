@@ -50,7 +50,7 @@ class Texture(file: File, private val type: Int, slot: Int, format: Int, pixelTy
     fun texUnit(shader: Shader, uniform: String, unit: Int) {
         shader.activate()
 
-        GL20.glUniform1i(GL20.glGetUniformLocation(shader.id, uniform), unit)
+        shader.setUniform(uniform, unit)
     }
 
     fun bind() {

@@ -1,7 +1,9 @@
 package com.bindglam.felis.client.rendering.shader
 
 import com.bindglam.felis.utils.Destroyable
+import org.joml.Matrix4f
 import org.lwjgl.opengl.GL20
+import org.lwjgl.system.MemoryStack.stackPush
 import java.io.File
 
 class Shader(private val vertexFile: File, private val fragmentFile: File) : Destroyable {
@@ -31,5 +33,15 @@ class Shader(private val vertexFile: File, private val fragmentFile: File) : Des
 
     override fun destroy() {
         GL20.glDeleteProgram(id)
+    }
+
+    fun setUniform(name: String, value: Matrix4f) {
+        stackPush().use { stack ->
+            GL20.glUniformMatrix4fv(GL20.glGetUniformLocation(id, name), false, value.get(stack.mallocFloat(16)))
+        }
+    }
+
+    fun setUniform(name: String, value: Int) {
+        GL20.glUniform1i(GL20.glGetUniformLocation(id, name), value)
     }
 }

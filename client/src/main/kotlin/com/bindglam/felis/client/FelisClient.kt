@@ -1,16 +1,13 @@
 package com.bindglam.felis.client
 
 import com.bindglam.felis.client.io.Window
-import com.bindglam.felis.client.rendering.model.EBO
-import com.bindglam.felis.client.rendering.model.Texture
-import com.bindglam.felis.client.rendering.model.VAO
-import com.bindglam.felis.client.rendering.model.VBO
-import com.bindglam.felis.client.rendering.shader.Shader
+import com.bindglam.felis.client.manager.MasterRenderingManager
+import com.bindglam.felis.client.rendering.scene.RenderScene
+import com.bindglam.felis.entity.TestEntity
+import com.bindglam.felis.scene.Scene
 import com.bindglam.felis.utils.math.RGBAColor
+import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL13
-import java.io.File
-import kotlin.math.sqrt
 
 class FelisClient : Runnable {
     companion object {
@@ -33,54 +30,35 @@ class FelisClient : Runnable {
 
         window.backgroundColor = RGBAColor.of(18, 33, 43, 255)
 
-        val vertices = floatArrayOf(
-            -0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f,	0.0f, 0.0f, // Lower left corner
-            -0.5f,  0.5f, 0.0f,     0.0f, 1.0f, 0.0f,	0.0f, 1.0f, // Upper left corner
-            0.5f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f,	1.0f, 1.0f, // Upper right corner
-            0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 1.0f,	1.0f, 0.0f
-        )
+        MasterRenderingManager.start()
 
-        val indices = intArrayOf(
-            0, 2, 1, // Upper triangle
-            0, 3, 2
-        )
+        val scene = Scene()
 
-        val shader = Shader(File("assets/shaders/default.vert.glsl"), File("assets/shaders/default.frag.glsl"))
-        shader.init()
+        val testEntity = TestEntity()
+        scene.addEntity(testEntity)
 
-        val vao = VAO()
-        vao.bind()
-
-        val vbo = VBO(vertices)
-        val ebo = EBO(indices)
-
-        vao.linkVBO(vbo, 0, 3, GL11.GL_FLOAT, 8, 0L)
-        vao.linkVBO(vbo, 1, 3, GL11.GL_FLOAT, 8, 3L)
-        vao.linkVBO(vbo, 2, 2, GL11.GL_FLOAT, 8, 6L)
-
-        vao.unbind()
-        vbo.unbind()
-        ebo.unbind()
-
-        val texture = Texture(File("assets/textures/pop_cat.png"), GL11.GL_TEXTURE_2D, GL13.GL_TEXTURE0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE)
-        texture.texUnit(shader, "tex0", 0)
+        val renderScene = RenderScene(scene, MasterRenderingManager.defaultShader)
 
         while(!window.shouldClose()) {
             window.clear()
 
-            shader.activate()
-            texture.bind()
-            vao.bind()
-            GL11.glDrawElements(GL11.GL_TRIANGLES, indices.size, GL11.GL_UNSIGNED_INT, 0)
+            testEntity.rotation.y+=1f
+            renderScene.render()
+
+            val view = Matrix4f()
+            val proj = Matrix4f()
+            view.translate(0f, -0.5f, -2.0f)
+            proj.perspective(Math.toRadians(45.0).toFloat(), window.size.x.toFloat() / window.size.y, 0.1f, 100.0f)
+
+            renderScene.shader.setUniform("view", view)
+            renderScene.shader.setUniform("proj", proj)
 
             window.update()
         }
 
-        vao.destroy()
-        vbo.destroy()
-        ebo.destroy()
-        texture.destroy()
-        shader.destroy()
+        renderScene.destroy()
+
+        MasterRenderingManager.destroy()
 
         window.destroy()
     }

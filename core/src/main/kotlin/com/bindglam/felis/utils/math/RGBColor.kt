@@ -1,6 +1,6 @@
 package com.bindglam.felis.utils.math
 
-interface RGBColor {
+sealed interface RGBColor {
     fun r(): Short
 
     fun g(): Short
@@ -13,7 +13,7 @@ interface RGBColor {
         fun of(r: Short, g: Short, b: Short): RGBColor = Impl(r, g, b)
     }
 
-    private class Impl(private val r: Short, private val g: Short, private val b: Short) : RGBColor {
+    private data class Impl(private val r: Short, private val g: Short, private val b: Short) : RGBColor {
         override fun r(): Short = r
         override fun g(): Short = g
         override fun b(): Short = b

@@ -3,7 +3,6 @@ plugins {
 }
 
 val lwjglVersion = "3.3.6"
-val jomlVersion = "1.10.8"
 
 val lwjglNatives = Pair(
     System.getProperty("os.name")!!,
@@ -48,5 +47,4 @@ dependencies {
     implementation ("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
     implementation ("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
     implementation ("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
-    implementation("org.joml", "joml", jomlVersion)
 }
