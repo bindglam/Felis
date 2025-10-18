@@ -7,13 +7,16 @@ import com.bindglam.felis.scene.Scene
 import com.bindglam.felis.utils.Destroyable
 import java.util.UUID
 
-class RenderScene(val scene: Scene, val shader: Shader) : Destroyable {
+open class RenderScene(val scene: Scene, val shader: Shader) : Destroyable {
     val renderers = hashMapOf<UUID, RenderEntity>()
 
-    fun render() {
+    private val forRemoval = HashSet(renderers.keys)
+
+    open fun render() {
         shader.activate()
 
-        val forRemoval = HashSet(renderers.keys)
+        forRemoval.clear()
+        forRemoval.addAll(renderers.keys)
 
         scene.entities.forEach { uuid, entity ->
             val renderer = renderers.computeIfAbsent(uuid) { RenderEntity(entity, EntityRenderingManager.createRenderer(entity, shader)) }

@@ -10,9 +10,19 @@ object MasterRenderingManager : IManager, Destroyable {
 
     override fun start() {
         defaultShader.init()
+
+        EntityRenderingManager.start()
+        SceneRenderingManager.start()
+    }
+
+    fun render() {
+        SceneRenderingManager.render()
     }
 
     override fun destroy() {
         defaultShader.destroy()
+
+        EntityRenderingManager.destroy()
+        SceneRenderingManager.destroy()
     }
 }

@@ -2,6 +2,7 @@ package com.bindglam.felis.client
 
 import com.bindglam.felis.client.io.Window
 import com.bindglam.felis.client.manager.MasterRenderingManager
+import com.bindglam.felis.client.manager.SceneRenderingManager
 import com.bindglam.felis.client.rendering.scene.RenderScene
 import com.bindglam.felis.entity.TestEntity
 import com.bindglam.felis.scene.Scene
@@ -36,26 +37,24 @@ class FelisClient : Runnable {
         val testEntity = TestEntity()
         scene.addEntity(testEntity)
 
-        val renderScene = RenderScene(scene, MasterRenderingManager.defaultShader)
+        SceneRenderingManager.changeScene(scene, MasterRenderingManager.defaultShader)
 
         while(!window.shouldClose()) {
             window.clear()
 
             testEntity.rotation.y+=1f
-            renderScene.render()
+            MasterRenderingManager.render()
 
             val view = Matrix4f()
             val proj = Matrix4f()
             view.translate(0f, -0.5f, -2.0f)
             proj.perspective(Math.toRadians(45.0).toFloat(), window.size.x.toFloat() / window.size.y, 0.1f, 100.0f)
 
-            renderScene.shader.setUniform("view", view)
-            renderScene.shader.setUniform("proj", proj)
+            MasterRenderingManager.defaultShader.setUniform("view", view)
+            MasterRenderingManager.defaultShader.setUniform("proj", proj)
 
             window.update()
         }
-
-        renderScene.destroy()
 
         MasterRenderingManager.destroy()
 
