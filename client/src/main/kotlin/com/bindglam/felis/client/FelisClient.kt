@@ -20,7 +20,7 @@ class FelisClient : Runnable {
             }
     }
 
-    private val window = Window("Felis", 1280, 720)
+    val window = Window("Felis", 1280, 720)
 
     private constructor()
 

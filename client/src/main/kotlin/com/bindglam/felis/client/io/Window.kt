@@ -1,5 +1,7 @@
 package com.bindglam.felis.client.io
 
+import com.bindglam.felis.client.io.input.KeyboardInputHandler
+import com.bindglam.felis.client.io.input.MouseInputHandler
 import com.bindglam.felis.utils.Destroyable
 import com.bindglam.felis.utils.math.RGBAColor
 import org.joml.Matrix4f
@@ -49,6 +51,9 @@ class Window(title: String, private var width: Int, private var height: Int) : D
     val projectionMatrix: Matrix4f
         get() = Matrix4f().perspective(FOV, width.toFloat() / height, Z_NEAR, Z_FAR)
 
+    val mouseInputHandler = MouseInputHandler(this)
+    val keyboardInputHandler = KeyboardInputHandler()
+
     fun init() {
         GLFWErrorCallback.createPrint(System.err).set()
 
@@ -67,6 +72,8 @@ class Window(title: String, private var width: Int, private var height: Int) : D
             width = w
             height = h
         }
+
+        GLFW.glfwSetKeyCallback(handle, keyboardInputHandler)
 
         stackPush().use { stack ->
             val pWidth = stack.mallocInt(1)
@@ -103,6 +110,9 @@ class Window(title: String, private var width: Int, private var height: Int) : D
     fun update() {
         GLFW.glfwSwapBuffers(handle)
         GLFW.glfwPollEvents()
+
+        mouseInputHandler.update()
+        keyboardInputHandler.update()
     }
 
     override fun destroy() {

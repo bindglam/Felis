@@ -1,9 +1,13 @@
 [versions]
-kotlin = "2.2.0"
+kotlin = "2.2.20"
+
+kotlinx_coroutines = "1.10.2"
 
 joml = "1.10.8"
 
 [libraries]
-kotlinJvm = { group = "org.jetbrains.kotlin.jvm", name = "org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
+kotlin_jvm = { group = "org.jetbrains.kotlin.jvm", name = "org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
+
+kotlinx_coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx_coroutines" }
 
 joml = { group = "org.joml", name = "joml", version.ref = "joml" }

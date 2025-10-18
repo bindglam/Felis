@@ -8,5 +8,5 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.kotlinJvm)
+    implementation(libs.kotlin.jvm)
 }

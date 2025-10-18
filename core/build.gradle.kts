@@ -4,4 +4,5 @@ plugins {
 
 dependencies {
     api(libs.joml)
+    api(libs.kotlinx.coroutines)
 }
