@@ -1,5 +1,5 @@
 plugins {
-    id("standard-conventions")
+    id("executable-conventions")
 }
 
 val lwjglVersion = "3.3.6"
