@@ -4,10 +4,11 @@ import com.bindglam.felis.client.rendering.scene.ICamera
 import com.bindglam.felis.entity.Entity
 import org.joml.Matrix4f
 import org.joml.Quaternionf
+import org.joml.Vector3f
 
 fun Entity.createTransformationMatrix(): Matrix4f {
     return Matrix4f().identity()
-        .translate(-position.x, -position.y, -position.z)
+        .translate(position.negate(Vector3f()))
         .rotate(rotation)
         .scale(scale)
 }

@@ -1,5 +1,7 @@
 package com.bindglam.felis.client.rendering.entity
 
+import com.bindglam.felis.client.FelisClient
+import com.bindglam.felis.client.manager.SceneManager
 import com.bindglam.felis.client.rendering.model.EBO
 import com.bindglam.felis.client.rendering.model.VAO
 import com.bindglam.felis.client.rendering.model.VBO
@@ -9,6 +11,7 @@ import com.bindglam.felis.utils.math.RGBColor
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL11
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 class HitboxRenderer(private val entity: Entity, private val shader: Shader) : EntityRenderer {
     companion object {
@@ -43,10 +46,13 @@ class HitboxRenderer(private val entity: Entity, private val shader: Shader) : E
         generateModel()
     }
 
+    @OptIn(ExperimentalAtomicApi::class)
     override fun render() {
+        if(!FelisClient.INSTANCE.isDebugMode) return
+
         generateModel()
 
-        shader.setUniform("colour", RGBColor.of(0, 255, 0))
+        shader.setUniform("colour", if(SceneManager.currentScene.load().entities.values.any { other -> entity.uuid != other.uuid && entity.hitbox.isColliding(other.hitbox) }) RGBColor.of(255, 0, 0) else RGBColor.of(0, 255, 0))
         shader.setUniform("model", Matrix4f().translate(entity.position.negate(Vector3f())))
 
         vao.bind()

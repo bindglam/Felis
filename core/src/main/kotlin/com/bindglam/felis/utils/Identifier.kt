@@ -7,8 +7,13 @@ sealed interface Identifier : IdentifierLike {
 
 
     companion object {
+        private const val DEFAULT_NAMESPACE = "felis"
+
         @JvmStatic
         fun of(namespace: String, key: String): Identifier = Impl(namespace, key)
+
+        @JvmStatic
+        fun defaultNamespace(key: String): Identifier = Impl(DEFAULT_NAMESPACE, key)
     }
 
     private data class Impl(private val namespace: String, private val key: String) : Identifier {

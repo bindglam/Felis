@@ -7,7 +7,7 @@ import org.joml.Vector3f
 
 class TestEntity : LivingEntity(EntityType.TEST) {
     companion object {
-        private val identifier = Identifier.of("felis", "test")
+        private val identifier = Identifier.defaultNamespace("test")
     }
 
     override val hitbox: OBB

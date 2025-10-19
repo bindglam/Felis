@@ -2,12 +2,11 @@ package com.bindglam.felis.entity
 
 import com.bindglam.felis.utils.Identifier
 import com.bindglam.felis.utils.math.OBB
-import com.bindglam.felis.utils.math.toQuaternionf
 import org.joml.Vector3f
 
 abstract class AbstractPlayerEntity : LivingEntity(EntityType.PLAYER) {
     companion object {
-        private val identifier = Identifier.of("felis", "player")
+        private val identifier = Identifier.defaultNamespace("player")
     }
 
     override val hitbox: OBB

@@ -81,7 +81,7 @@ class ClientPlayerEntity(val isMultiplayerAuthority: Boolean) : AbstractPlayerEn
             if(keyboardHandler.isJustPressed(GLFW.GLFW_KEY_F1)) {
                 isWireFrameRendering = !isWireFrameRendering
 
-                GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, if(isWireFrameRendering) GL11.GL_LINE else GL11.GL_FILL)
+                FelisClient.INSTANCE.isDebugMode = !FelisClient.INSTANCE.isDebugMode
             }
         }
     }

@@ -5,10 +5,14 @@ import com.bindglam.felis.client.manager.EntityRenderingManager
 import com.bindglam.felis.client.manager.MasterRenderingManager
 import com.bindglam.felis.client.rendering.Renderable
 import com.bindglam.felis.client.rendering.entity.RenderEntity
+import com.bindglam.felis.client.rendering.shader.Shader
+import com.bindglam.felis.client.rendering.shader.ShaderType
 import com.bindglam.felis.client.utils.createViewMatrix
+import com.bindglam.felis.entity.LightEntity
 import com.bindglam.felis.scene.Scene
 import com.bindglam.felis.utils.Destroyable
 import org.joml.Matrix4f
+import org.joml.Vector3f
 import java.util.*
 
 class RenderScene(val scene: Scene) : Destroyable, Renderable {
@@ -18,21 +22,14 @@ class RenderScene(val scene: Scene) : Destroyable, Renderable {
 
     private var projectionMatrix = Matrix4f()
     private var viewMatrix = Matrix4f()
+    private var cameraPosition = Vector3f()
 
     override fun render() {
-        updateMatrix()
-
-        MasterRenderingManager.sceneShader.activate()
-        MasterRenderingManager.sceneShader.setUniform("proj", projectionMatrix)
-        MasterRenderingManager.sceneShader.setUniform("view", viewMatrix)
-
         forRemoval.clear()
         forRemoval.addAll(renderers.keys)
 
         scene.entities.forEach { uuid, entity ->
-            val renderer = renderers.computeIfAbsent(uuid) { RenderEntity(entity, EntityRenderingManager.createRenderer(entity, MasterRenderingManager.sceneShader)) }
-
-            renderer.render()
+            renderers.computeIfAbsent(uuid) { EntityRenderingManager.createRenderer(entity) }
 
             forRemoval.remove(uuid)
         }
@@ -41,17 +38,28 @@ class RenderScene(val scene: Scene) : Destroyable, Renderable {
             renderers.remove(uuid)?.renderer?.destroy()
         }
 
-        MasterRenderingManager.sceneShader.deactivate()
+        updateMatrix()
 
-        MasterRenderingManager.debugShader.activate()
-        MasterRenderingManager.debugShader.setUniform("proj", projectionMatrix)
-        MasterRenderingManager.debugShader.setUniform("view", viewMatrix)
+        MasterRenderingManager.shaders.forEach { type, shader ->
+            shader.activate()
+            shader.setUniform("proj", projectionMatrix)
+            shader.setUniform("view", viewMatrix)
+            shader.setUniform("camPos", cameraPosition)
 
-        renderers.forEach { uuid, renderer ->
-            renderer.hitboxRenderer.render()
+            renderLighting(type, shader)
+
+            renderers.forEach { uuid, renderer ->
+                if(type == ShaderType.DEBUG) {
+                    renderer.hitboxRenderer.render()
+                }
+
+                if(renderer.shaderType != type) return@forEach
+
+                renderer.render()
+            }
+
+            shader.deactivate()
         }
-
-        MasterRenderingManager.debugShader.deactivate()
     }
 
     private fun updateMatrix() {
@@ -60,6 +68,16 @@ class RenderScene(val scene: Scene) : Destroyable, Renderable {
 
         projectionMatrix = FelisClient.INSTANCE.window.projectionMatrix
         viewMatrix = camera.createViewMatrix()
+        cameraPosition = camera.cameraPosition
+    }
+
+    private fun renderLighting(type: ShaderType, shader: Shader) {
+        if(type == ShaderType.DEBUG) return
+
+        val light = scene.entities.values.find { it is LightEntity } as LightEntity? ?: return
+
+        shader.setUniform("lightColor", light.color)
+        shader.setUniform("lightPos", light.position.negate(Vector3f()))
     }
 
     override fun destroy() {

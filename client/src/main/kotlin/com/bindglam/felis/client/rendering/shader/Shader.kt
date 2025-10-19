@@ -1,9 +1,11 @@
 package com.bindglam.felis.client.rendering.shader
 
 import com.bindglam.felis.utils.Destroyable
+import com.bindglam.felis.utils.math.RGBAColor
 import com.bindglam.felis.utils.math.RGBColor
 import com.bindglam.felis.utils.math.toVector3f
 import org.joml.Matrix4f
+import org.joml.Vector3f
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 import org.lwjgl.system.MemoryStack.stackPush
@@ -52,6 +54,14 @@ class Shader(private val vertexFile: File, private val fragmentFile: File) : Des
         stackPush().use { stack ->
             GL20.glUniformMatrix4fv(GL20.glGetUniformLocation(id, name), false, value.get(stack.mallocFloat(16)))
         }
+    }
+
+    fun setUniform(name: String, value: Vector3f) {
+        GL20.glUniform3f(GL20.glGetUniformLocation(id, name), value.x, value.y, value.z)
+    }
+
+    fun setUniform(name: String, value: RGBAColor) {
+        GL20.glUniform4f(GL20.glGetUniformLocation(id, name), value.r()/255f, value.g()/255f, value.b()/255f, value.a()/255f)
     }
 
     fun setUniform(name: String, value: RGBColor) {

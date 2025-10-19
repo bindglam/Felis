@@ -1,6 +1,7 @@
 package com.bindglam.felis.client.rendering.entity
 
 import com.bindglam.felis.client.rendering.shader.Shader
+import com.bindglam.felis.client.rendering.shader.ShaderType
 import com.bindglam.felis.entity.Entity
 import com.bindglam.felis.entity.EntityType
 
@@ -8,6 +9,8 @@ interface EntityRendererFactory {
     fun create(entity: Entity, shader: Shader): EntityRenderer
 
     fun type(): EntityType
+
+    fun shader(): ShaderType
 
 
     companion object {
@@ -17,6 +20,7 @@ interface EntityRendererFactory {
     class Builder {
         private lateinit var createSupplier: (Entity, Shader) -> EntityRenderer
         private lateinit var type: EntityType
+        private var shader: ShaderType = ShaderType.SCENE
 
         internal constructor()
 
@@ -30,11 +34,16 @@ interface EntityRendererFactory {
             return this
         }
 
+        fun shader(shader: ShaderType): Builder {
+            this.shader = shader
+            return this
+        }
+
         fun build(): EntityRendererFactory {
             return object : EntityRendererFactory {
                 override fun create(entity: Entity, shader: Shader): EntityRenderer = createSupplier(entity, shader)
-
                 override fun type(): EntityType = type
+                override fun shader(): ShaderType = shader
             }
         }
     }

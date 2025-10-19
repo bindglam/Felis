@@ -1,13 +1,18 @@
 package com.bindglam.felis.client
 
 import com.bindglam.felis.client.entity.ClientPlayerEntity
+import com.bindglam.felis.client.io.Timer
 import com.bindglam.felis.client.io.Window
 import com.bindglam.felis.client.manager.MasterRenderingManager
 import com.bindglam.felis.client.manager.SceneManager
+import com.bindglam.felis.entity.LightEntity
 import com.bindglam.felis.entity.TestEntity
 import com.bindglam.felis.scene.Scene
 import com.bindglam.felis.utils.math.RGBAColor
 import com.bindglam.felis.utils.math.deg2rad
+import org.lwjgl.opengl.GL11
+import kotlin.math.cos
+import kotlin.math.sin
 
 class FelisClient : Runnable {
     companion object {
@@ -22,6 +27,8 @@ class FelisClient : Runnable {
     }
 
     val window = Window("Felis", 1280, 720)
+
+    var isDebugMode = false
 
     private constructor()
 
@@ -46,20 +53,26 @@ class FelisClient : Runnable {
         testEntity2.position.set(1f, 0.0f, 0.0f)
         scene.addEntity(testEntity2)
 
+        val light = LightEntity()
+        scene.addEntity(light)
+
         SceneManager.changeScene(scene)
 
+        var time = 0f
         while(!window.shouldClose()) {
             window.clear()
 
+            //GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, if(isDebugMode) GL11.GL_LINE else GL11.GL_FILL)
+
             testEntity.rotation.rotateY(deg2rad(1f))
             testEntity2.rotation.rotateX(deg2rad(1f))
-            testEntity2.rotation.rotateY(deg2rad(1f))
-            testEntity2.rotation.rotateZ(deg2rad(1f))
+
+            light.position.set(cos(time)*3f, 1f, sin(time)*3f)
+
             MasterRenderingManager.render()
 
-            println(testEntity2.hitbox.isColliding(player.hitbox))
-
             window.update()
+            time += Timer.deltaTime.toFloat()
         }
 
         MasterRenderingManager.destroy()
