@@ -11,7 +11,7 @@ abstract class AbstractPlayerEntity : LivingEntity(EntityType.PLAYER) {
     }
 
     override val hitbox: OBB
-        get() = OBB(Vector3f(0.25f, 0.4f, 0.25f), position.add(0f, 0.4f, 0f, Vector3f()), rotation.toQuaternionf())
+        get() = OBB(Vector3f(0.25f, 0.4f, 0.25f), position.add(0f, 0.4f, 0f, Vector3f()), rotation)
 
     override fun identifier(): Identifier = identifier
 }

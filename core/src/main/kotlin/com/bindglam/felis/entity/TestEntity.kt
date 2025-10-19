@@ -11,7 +11,7 @@ class TestEntity : LivingEntity(EntityType.TEST) {
     }
 
     override val hitbox: OBB
-        get() = OBB(Vector3f(0.5f, 0.4f, 0.5f), position.add(0f, 0.4f, 0f, Vector3f()), rotation.toQuaternionf())
+        get() = OBB(Vector3f(0.5f, 0.4f, 0.5f), position.add(0f, 0.4f, 0f, Vector3f()), rotation)
 
     override fun identifier(): Identifier = identifier
 }

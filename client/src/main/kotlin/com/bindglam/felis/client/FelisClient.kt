@@ -7,6 +7,7 @@ import com.bindglam.felis.client.manager.SceneManager
 import com.bindglam.felis.entity.TestEntity
 import com.bindglam.felis.scene.Scene
 import com.bindglam.felis.utils.math.RGBAColor
+import com.bindglam.felis.utils.math.deg2rad
 
 class FelisClient : Runnable {
     companion object {
@@ -50,8 +51,10 @@ class FelisClient : Runnable {
         while(!window.shouldClose()) {
             window.clear()
 
-            testEntity.rotation.y+=1f
-            testEntity2.rotation.y-=1f
+            testEntity.rotation.rotateY(deg2rad(1f))
+            testEntity2.rotation.rotateX(deg2rad(1f))
+            testEntity2.rotation.rotateY(deg2rad(1f))
+            testEntity2.rotation.rotateZ(deg2rad(1f))
             MasterRenderingManager.render()
 
             println(testEntity2.hitbox.isColliding(player.hitbox))

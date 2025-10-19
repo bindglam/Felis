@@ -4,6 +4,12 @@ import com.bindglam.felis.client.FelisClient
 import com.bindglam.felis.client.io.Timer
 import com.bindglam.felis.client.rendering.scene.ICamera
 import com.bindglam.felis.entity.AbstractPlayerEntity
+import com.bindglam.felis.utils.math.FRONT
+import com.bindglam.felis.utils.math.RIGHT
+import com.bindglam.felis.utils.math.deg2rad
+import com.bindglam.felis.utils.math.toEulerAngles
+import org.joml.Quaternionf
+import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11
 import kotlin.math.cos
@@ -11,8 +17,11 @@ import kotlin.math.sin
 
 class ClientPlayerEntity(val isMultiplayerAuthority: Boolean) : AbstractPlayerEntity(), ICamera {
     companion object {
-        private const val SPEED = 10f
+        private const val SPEED = 5f
     }
+
+    override var cameraPosition = Vector3f()
+    override var cameraRotation = Quaternionf()
 
     var isPaused = true
     var isWireFrameRendering = false
@@ -22,27 +31,37 @@ class ClientPlayerEntity(val isMultiplayerAuthority: Boolean) : AbstractPlayerEn
     }
 
     override fun updateCamera() {
+        cameraPosition = position
+
         val window = FelisClient.INSTANCE.window
         val keyboardHandler = window.keyboardInputHandler
         val mouseHandler = window.mouseInputHandler
 
         if(isMultiplayerAuthority) {
             if(!isPaused) {
-                rotation.y -= mouseHandler.dx.toFloat() * 0.05f
-                rotation.x -= mouseHandler.dy.toFloat() * 0.05f
-                rotation.x = Math.clamp(rotation.x, -89f, 89f)
+                val rotY = deg2rad(-mouseHandler.dx.toFloat() * 0.05f)
+                val rotX = deg2rad(-mouseHandler.dy.toFloat() * 0.05f)
+
+                rotation.rotateY(rotY)
+
+                val cameraAngles = cameraRotation.toEulerAngles()
+                cameraRotation.rotationYXZ(cameraAngles.y+rotY, Math.clamp(cameraAngles.x+rotX, deg2rad(-89f), deg2rad(89f)), 0f)
+
+                //rotation.y -= mouseHandler.dx.toFloat() * 0.05f
+                //rotation.x -= mouseHandler.dy.toFloat() * 0.05f
+                //rotation.x = Math.clamp(rotation.x, -89f, 89f)
 
                 if(keyboardHandler.isPressed(GLFW.GLFW_KEY_W)) {
-                    position.add(sin(Math.toRadians(rotation.y.toDouble()).toFloat()) * SPEED * Timer.deltaTime.toFloat(), 0f, cos(Math.toRadians(rotation.y.toDouble()).toFloat()) * SPEED * Timer.deltaTime.toFloat())
+                    position.add(rotation.transform(FRONT).mul(SPEED).mul(Timer.deltaTime.toFloat()))
                 }
                 if(keyboardHandler.isPressed(GLFW.GLFW_KEY_S)) {
-                    position.add(-sin(Math.toRadians(rotation.y.toDouble()).toFloat()) * SPEED * Timer.deltaTime.toFloat(), 0f, -cos(Math.toRadians(rotation.y.toDouble()).toFloat()) * SPEED * Timer.deltaTime.toFloat())
+                    position.add(rotation.transform(FRONT).mul(-SPEED).mul(Timer.deltaTime.toFloat()))
                 }
                 if(keyboardHandler.isPressed(GLFW.GLFW_KEY_A)) {
-                    position.add(cos(Math.toRadians(rotation.y.toDouble()).toFloat()) * SPEED * Timer.deltaTime.toFloat(), 0f, -sin(Math.toRadians(rotation.y.toDouble()).toFloat()) * SPEED * Timer.deltaTime.toFloat())
+                    position.add(rotation.transform(RIGHT).mul(-SPEED).mul(Timer.deltaTime.toFloat()))
                 }
                 if(keyboardHandler.isPressed(GLFW.GLFW_KEY_D)) {
-                    position.add(-cos(Math.toRadians(rotation.y.toDouble()).toFloat()) * SPEED * Timer.deltaTime.toFloat(), 0f, sin(Math.toRadians(rotation.y.toDouble()).toFloat()) * SPEED * Timer.deltaTime.toFloat())
+                    position.add(rotation.transform(RIGHT).mul(SPEED).mul(Timer.deltaTime.toFloat()))
                 }
 
                 if(keyboardHandler.isPressed(GLFW.GLFW_KEY_SPACE)) {
